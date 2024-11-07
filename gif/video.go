@@ -3,17 +3,37 @@ package gif
 import (
 	"image"
 	"image/draw"
-	"image/gif"
+	gogif "image/gif"
+	"io"
 	"time"
 
 	"github.com/reiver/go-video"
 )
 
 type Video struct {
-	internal *gif.GIF
+	internal *gogif.GIF
 }
 
 var _ video.Video = &Video{}
+
+func NewVideo(reader io.Reader) (*Video, error) {
+	if nil == reader {
+		return nil, errNilReader
+	}
+
+	anigif, err := gogif.DecodeAll(reader)
+	if nil != err {
+		return nil, err
+	}
+
+	{
+		var video = Video{
+			internal:anigif,
+		}
+
+		return &video, nil
+	}
+}
 
 func (receiver *Video) Delay(index int) time.Duration {
 	var noDuration time.Duration
@@ -22,7 +42,7 @@ func (receiver *Video) Delay(index int) time.Duration {
 		return noDuration
 	}
 
-	var internal *gif.GIF
+	var internal *gogif.GIF
 	if nil == internal {
 		return noDuration
 	}
@@ -51,7 +71,7 @@ func (receiver *Video) DrawOperation(index int) draw.Op {
 		return nada
 	}
 
-	var internal *gif.GIF
+	var internal *gogif.GIF
 	if nil == internal {
 		return nada
 	}
@@ -60,11 +80,11 @@ func (receiver *Video) DrawOperation(index int) draw.Op {
 		var disposal byte = internal.Disposal[index-1]
 
 		switch disposal {
-		case gif.DisposalNone:
+		case gogif.DisposalNone:
 			return draw.Over
-		case gif.DisposalBackground:
+		case gogif.DisposalBackground:
 			return draw.Src
-		case gif.DisposalPrevious:
+		case gogif.DisposalPrevious:
 			if index <= 0 {
 				return draw.Src
 			}
@@ -80,7 +100,7 @@ func (receiver *Video) Image(index int) image.Image {
 		return nil
 	}
 
-	var internal *gif.GIF
+	var internal *gogif.GIF
 	if nil == internal {
 		return nil
 	}
@@ -104,7 +124,7 @@ func (receiver *Video) Len() int {
 		return 0
 	}
 
-	var internal *gif.GIF
+	var internal *gogif.GIF
 	if nil == internal {
 		return 0
 	}
@@ -117,7 +137,7 @@ func (receiver *Video) LoopCount() int {
 		return 1
 	}
 
-	var internal *gif.GIF
+	var internal *gogif.GIF
 	if nil == internal {
 		return 1
 	}
