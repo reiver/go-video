@@ -2,6 +2,7 @@ package gif
 
 import (
 	"image"
+	"image/draw"
 	"image/gif"
 	"time"
 
@@ -40,6 +41,37 @@ func (receiver *Video) Delay(index int) time.Duration {
 		var delay int = internal.Delay[index]
 
 		return time.Millisecond * 10 * time.Duration(delay)
+	}
+}
+
+func (receiver *Video) DrawOperation(index int) draw.Op {
+	var nada draw.Op = draw.Src
+
+	if nil == receiver {
+		return nada
+	}
+
+	var internal *gif.GIF
+	if nil == internal {
+		return nada
+	}
+
+	{
+		var disposal byte = internal.Disposal[index-1]
+
+		switch disposal {
+		case gif.DisposalNone:
+			return draw.Over
+		case gif.DisposalBackground:
+			return draw.Src
+		case gif.DisposalPrevious:
+			if index <= 0 {
+				return draw.Src
+			}
+			return draw.Over
+		default:
+			return draw.Over
+		}
 	}
 }
 
