@@ -144,3 +144,18 @@ func (receiver *Video) LoopCount() int {
 
 	return internal.LoopCount
 }
+
+func (receiver *Video) Size() (width int, height int) {
+	if nil == receiver {
+		return 0,0
+	}
+
+	var internal *gogif.GIF
+	if nil == internal {
+		return 0,0
+	}
+
+	var cfg = internal.Config
+
+	return cfg.Width, cfg.Height
+}

@@ -13,4 +13,5 @@ type Video interface {
 	Image(int) image.Image
 	Len() int
 	LoopCount() int
+	Size() (int,int)
 }
