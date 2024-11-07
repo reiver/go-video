@@ -155,7 +155,31 @@ func (receiver *Video) Size() (width int, height int) {
 		return 0,0
 	}
 
-	var cfg = internal.Config
+	{
+		var cfg = internal.Config
 
-	return cfg.Width, cfg.Height
+		width, height = cfg.Width, cfg.Height
+
+		if 0 != width || 0 != height {
+			return width, height
+		}
+	}
+
+	if receiver.Len() <= 0 {
+		return 0,0
+	}
+
+	{
+		var img image.Image = receiver.Image(0)
+		if nil == img {
+			return 0,0
+		}
+
+		var rect image.Rectangle = img.Bounds()
+
+		width = rect.Max.X - rect.Min.X
+		height = rect.Max.Y - rect.Min.Y
+
+		return width, height
+	}
 }
