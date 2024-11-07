@@ -25,6 +25,9 @@ func NewVideo(reader io.Reader) (*Video, error) {
 	if nil != err {
 		return nil, err
 	}
+	if nil == anigif {
+		return nil, errNilGIF
+	}
 
 	{
 		var video = Video{
@@ -42,7 +45,7 @@ func (receiver *Video) Delay(index int) time.Duration {
 		return noDuration
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return noDuration
 	}
@@ -71,7 +74,7 @@ func (receiver *Video) DrawOperation(index int) draw.Op {
 		return nada
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return nada
 	}
@@ -100,7 +103,7 @@ func (receiver *Video) Image(index int) image.Image {
 		return nil
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return nil
 	}
@@ -124,7 +127,7 @@ func (receiver *Video) Len() int {
 		return 0
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return 0
 	}
@@ -137,7 +140,7 @@ func (receiver *Video) LoopCount() int {
 		return 1
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return 1
 	}
@@ -150,7 +153,7 @@ func (receiver *Video) Size() (width int, height int) {
 		return 0,0
 	}
 
-	var internal *gogif.GIF
+	var internal *gogif.GIF = receiver.internal
 	if nil == internal {
 		return 0,0
 	}
